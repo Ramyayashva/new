@@ -1,0 +1,15 @@
+%dw 2.0
+
+type auto_5516eca8_d3f9_4dff_b716_b549f3ebd503_Output_Payload = {|
+  country?: String, 
+  town?: String, 
+  address2?: String, 
+  city?: String, 
+  address1?: String, 
+  name?: String, 
+  postcode?: String, 
+  houseNo?: String, 
+  state?: String
+|} {"description": "This is a address datatype",
+"label": "Address Datatype"}
+

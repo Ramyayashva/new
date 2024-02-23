@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="implementation-get-addressFlow" doc:id="5516eca8-d3f9-4dff-b716-b549f3ebd503" >
+		<logger level="INFO" doc:name="Start the implementation Flow" doc:id="b9805a95-9d38-43e2-852a-bae0d00fd3c1" message="Start the implementation Flow #[flow.name],correlationId #[correlationId]"/>
+		<ee:transform doc:name="Retrive addressId and postcode" doc:id="93f5294b-1b76-478c-a891-7ae8060412ee" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="postcode" ><![CDATA[attributes.queryParams.postcode]]></ee:set-variable>
+				<ee:set-variable variableName="addressId" ><![CDATA[attributes.uriParams.'addressid']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<http:request method="GET" doc:name="lm-addressLockup-sapi://GET" doc:id="df0181f6-f23e-4b06-834e-54d9ad38ad4d" config-ref="HTTP_Request_configuration" path="${lm-address.getpath}" responseTimeout="${lm-address.responsetimeout}">
+			<http:headers ><![CDATA[#[${file::dwl-employee-post.dwl}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"postcode" : vars.postcode
+}]]]></http:query-params>
+		
+</http:request>
+		<ee:transform doc:name="Address payload" doc:id="f6b94f95-fcd4-4ad0-b17c-96df992415e1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End of the Flow" doc:id="83514bd5-bce1-461f-acbc-5eb6b072c843" message="Flow ended"/>
+		<error-handler ref="global-error-handlerError_Handler" />
+	
+</flow>
+	
+	</mule>

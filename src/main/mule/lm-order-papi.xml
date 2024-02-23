@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <flow name="lm-order-papi-main" doc:id="c8a8a3d5-558f-4dde-9191-34eb79aa0cf5">
+        <http:listener config-ref="lm-order-papi-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="lm-order-papi-config" />
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="lm-order-papi-console">
+        <http:listener config-ref="lm-order-papi-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="lm-order-papi-config" />
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="put:\customers\(customerid)\address:application\json:lm-order-papi-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="customerid">attributes.uriParams.'customerid'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  code: "SUCCESS",
+  message: "successfully retrive the data"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="put:\order\(orderid):application\json:lm-order-papi-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="orderid">attributes.uriParams.'orderid'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  code: "SUCCESS",
+  message: "successfully retrive the data"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="put:\tracking\(trackingid):application\json:lm-order-papi-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="trackingid">attributes.uriParams.'trackingid'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  code: "SUCCESS",
+  message: "successfully retrive the data"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="get:\customers\(customerid)\address\(addressid):lm-order-papi-config">
+		<flow-ref doc:name="Flow Reference" doc:id="e8badd1f-910b-4497-aadd-33ba2ffb3e68" name="implementation-get-addressFlow"/>
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="get:\order\(orderid):lm-order-papi-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="orderid">attributes.uriParams.'orderid'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  productId: 564,
+  orderId: 233,
+  status: "Its moving",
+  customerId: 101
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="get:\tracking\(trackingid):lm-order-papi-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="trackingid">attributes.uriParams.'trackingid'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  trackingId: 10,
+  shipmentStatus: "order transist",
+  orderId: 12,
+  deliveryAddress: {
+    name: "Ram",
+    houseNo: "1/2",
+    address1: "Gandhi street,chatram",
+    address2: "optional",
+    pincode: 600000,
+    town: "Namakkal",
+    city: "Namakkal",
+    state: "TamilNadu",
+    country: "India"
+  },
+  paymentMethod: {
+    cardNumber: 1234567890123456,
+    cardType: "visa"
+  },
+  orderSummary: {
+    itemTotal: 1,
+    packingAmount: "1000 rs",
+    totalAmount: "1000 rs"
+  }
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+</mule>

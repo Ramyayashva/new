@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="lm-order-papi-test-suite.xml" />
+	<munit:test name="lm-order-papi-test-suite-lm-order-papi-mainTest" doc:id="7bddc4f6-94a9-4219-9adc-188a2a2c8848" description="Test">
+		
+		<munit:behavior >
+					<munit-tools:mock-when doc:name="Mock when" doc:id="f765d666-fe3d-4065-a675-5cc0725486bd" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="GET" attributeName="method" />
+					<munit-tools:with-attribute whereValue="lm-addressLockup-sapi://GET" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="df0181f6-f23e-4b06-834e-54d9ad38ad4d" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="http://lm-addresslockup-sapi.us-e2.cloudhub.io/api/address/0" attributeName="url" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="fc8cb5f5-3950-4451-a95f-c26fa1c6ddf1" >
+				<flow-ref doc:name="Flow-ref to lm-order-papi-main" doc:id="9405adde-7425-48c7-b3f3-11585ab8f6a3" name="lm-order-papi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="bf1f976e-7556-4cca-a675-d4e7141f26f3" type="ANY"/>
+				</error-handler>
+			</try>
+		</munit:execution>
+	</munit:test>
+
+
+</mule>
